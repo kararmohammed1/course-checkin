@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>توليد QR Code للطالب</title>
+  <!-- مكتبة توليد QR -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Tahoma', sans-serif;
+      background: #ffffff;
+      color: #2c3e50;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #27ae60;
+    }
+    .form-box {
+      background: #ecfdf5;
+      border: 2px solid #27ae60;
+      border-radius: 12px;
+      padding: 20px;
+      display: inline-block;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #27ae60;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #219150;
+    }
+    #qrcode {
+      margin-top: 20px;
+    }
+    #studentLabel {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <h1> توليد QR Code للطالب</h1>
+  <div class="form-box">
+    <input type="text" id="studentName" placeholder="الاسم الثلاثي" />
+    <input type="text" id="studentPhone" placeholder="رقم الهاتف" />
+    <button onclick="generateQRCode()">توليد الكود</button>
+    <canvas id="qrcode"></canvas>
+    <div id="studentLabel"></div>
+    <a id="downloadLink" style="display:none" download="student-qrcode.png">📥 تحميل الكود</a>
+  </div>
+
+  <script>
+    async function generateQRCode() {
+      const name = document.getElementById("studentName").value.trim();
+      const phone = document.getElementById("studentPhone").value.trim();
+      const canvas = document.getElementById("qrcode");
+      const label = document.getElementById("studentLabel");
+      const downloadLink = document.getElementById("downloadLink");
+
+      if (!name || !phone) {
+        alert("الرجاء إدخال الاسم الثلاثي ورقم الهاتف");
+        return;
+      }
+
+      const text = `الاسم: ${name} | الهاتف: ${phone}`;
+
+      // توليد الكود على الكانفاس
+      await QRCode.toCanvas(canvas, text, {
+        width: 200,
+        color: {
+          dark: "#27ae60",  // أخضر
+          light: "#ffffff"  // أبيض
+        }
+      });
+
+      // عرض الاسم تحت الكود
+      label.innerText = name;
+
+      // إنشاء رابط تحميل
+      downloadLink.href = canvas.toDataURL("image/png");
+      downloadLink.style.display = "block";
+    }
+  </script>
+</body>
+</html>
